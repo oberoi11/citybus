@@ -1,0 +1,87 @@
+.layout-parent {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  padding: 15px;
+  height: 100vh;
+  gap: 20px;
+  overflow-x: hidden !important;
+}
+
+/*this is the heading css*/
+.header {
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.479);
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  position: relative; /* Needed for positioning the menu icon */
+}
+
+.page-title {
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+  margin: 0; /* Remove left margin to ensure it's centered */
+}
+
+.header i {
+  position: absolute;
+  left: 20px; /* Position the menu icon on the left */
+  cursor: pointer;
+}
+.body {
+  width: 100%;
+}
+
+
+.sidebar {
+  background-color: var(--secondary);
+  border-radius: 5px;
+  display: flex;
+  justify-content: start;
+  padding: 0 20px;
+  flex-direction: column;
+}
+.logo {
+  color: white;
+  margin-top: 0.5rem;
+}
+.role {
+  margin-top: 0.5rem;
+  color: white;
+  font-size: 16px;
+}
+.menu{
+    margin-top: 150px;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding: 5px 15px;
+  width: 100%;
+  cursor: pointer;
+  transition: 0.2s;
+  gap: 15px;
+}
+.active-menu-item {
+  border: 2px solid white;
+  border-radius: 5px;
+}
+.menu-item i {
+  font-size: 20px;
+  margin-right: 10px;
+  color: white;
+}
+.menu-item span {
+  color: white;
+  font-size: 18px;
+}
+.content {
+  padding: 10px 0px;
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
+  height: 85vh;
+}
