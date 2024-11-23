@@ -15,7 +15,4 @@ This project is a **City Bus Management App** built using the **MERN stack** (Mo
 
 ## Installation
 
-To run this project, you need to install the dependencies for both the backend and frontend. Follow the steps below:
-
-### Clone the Repository
-```bash
+To run this project, you need to install the dependencies for both the backend and frontend.
