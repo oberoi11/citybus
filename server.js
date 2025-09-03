@@ -62,7 +62,7 @@ if (process.env.NODE_ENV === "production") {
   const https = require("https");
 
   setInterval(() => {
-    https.get("https://citybus-1.onrender.com"); // 👈 replace with your backend URL
+    https.get("https://citybus-wwml.onrender.com"); // 👈 replace with your backend URL
   }, 1000 * 60 * 14); // every 14 minutes (Render free tier sleeps after 15)
 }
 
