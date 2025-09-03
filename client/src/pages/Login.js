@@ -32,7 +32,7 @@ function Login() {
   const handleOtpVerification = async (values) => {
     try {
       dispatch(ShowLoading());
-      const response = await axios.post("/api/users/verify-otp", {
+      const response = await axiosInstance.post("/api/users/verify-otp", {
         ...values,
         userId,
       });
