@@ -2,6 +2,7 @@ import React from "react";
 import { Form, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { axiosInstance } from "../helpers/axiosInstance";
 import { useDispatch } from "react-redux";
 import { ShowLoading, HideLoading } from "../redux/alertsSlice";
 import '../resourses/auth.css'
@@ -12,7 +13,7 @@ function Register() {
   const onFinish = async (values) => {
     try {
       dispatch(ShowLoading());
-      const response = await axios.post("/api/users/register", values);
+       const response = await axiosInstance.post("/api/users/register", values);
       dispatch(HideLoading());
       if (response.data.success) {
         message.success(response.data.message);
