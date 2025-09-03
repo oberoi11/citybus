@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
 
 module.exports = { io };
 
-app.use(cors(*));
+app.use(cors({origin:"*"}));
 app.use(express.json());
 
 const usersRoute = require("./routes/usersRoute");
