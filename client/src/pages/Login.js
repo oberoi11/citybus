@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, message } from "antd";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import { axiosInstance } from "../helpers/axiosInstance"; 
 import { useDispatch } from "react-redux";
 import { HideLoading, ShowLoading } from "../redux/alertsSlice";
 import "../resourses/auth.css";
@@ -14,7 +14,7 @@ function Login() {
   const handleLogin = async (values) => {
     try {
       dispatch(ShowLoading());
-      const response = await axios.post("/api/users/login", values);
+       const response = await axiosInstance.post("/api/users/login", values);
       dispatch(HideLoading());
       if (response.data.success) {
         message.success(response.data.message);
