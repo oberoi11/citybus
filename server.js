@@ -8,12 +8,12 @@ const dbConfig = require("./config/dbConfig");
 const port = process.env.PORT || 5000;
 const path=require("path")
 
-const corsOptions = {
-  origin: "http://localhost:3000",
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
-  optionsSuccessStatus: 204,
-};
+// const corsOptions = {
+//   origin: "http://localhost:3000",
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   credentials: true,
+//   optionsSuccessStatus: 204,
+// };
 
 
 const server = http.createServer(app);
@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
 
 module.exports = { io };
 
-app.use(cors(corsOptions));
+app.use(cors(*));
 app.use(express.json());
 
 const usersRoute = require("./routes/usersRoute");
