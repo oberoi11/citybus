@@ -1,7 +1,6 @@
 import React from "react";
 import { Form, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { axiosInstance } from "../helpers/axiosInstance";
 import { useDispatch } from "react-redux";
 import { ShowLoading, HideLoading } from "../redux/alertsSlice";
