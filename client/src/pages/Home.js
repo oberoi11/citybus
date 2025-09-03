@@ -20,7 +20,7 @@ function Home() {
     });
     try {
       dispatch(ShowLoading());
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         "/api/buses/get-all-buses",
         tempFilters,
         {
