@@ -1,5 +1,5 @@
 import { message } from "antd";
-import axios from "axios";
+import {axiosInstance} from "./helpers/axiosInstance";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ function ProtectedRoute({ children }) {
   const validateToken = async () => {
     try {
       dispatch(ShowLoading());
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         "/api/users/get-user-by-id",
         {},
         {
