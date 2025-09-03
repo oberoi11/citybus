@@ -1,5 +1,5 @@
 import { message } from "antd";
-import {axiosInstance} from "./helpers/axiosInstance";
+import {axiosInstance} from "../helpers/axiosInstance";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
