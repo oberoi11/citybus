@@ -57,5 +57,14 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.resolve(__dirname, "client/build/index.html"));
   });
 }
+// Keep-alive ping to prevent Render free instance from sleeping
+if (process.env.NODE_ENV === "production") {
+  const https = require("https");
+
+  setInterval(() => {
+    https.get("https://citybus-1.onrender.com"); // 👈 replace with your backend URL
+  }, 1000 * 60 * 14); // every 14 minutes (Render free tier sleeps after 15)
+}
+
 
 server.listen(port, () => console.log(`Server running on port ${port}!`));
