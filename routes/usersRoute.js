@@ -122,7 +122,7 @@ router.post("/login", async (req, res) => {
   //     success: true,
   //     data: { userId: userExists._id },
   //   });}
-   catch (error) {
+  }catch (error) {
     res.send({
       message: error.message,
       success: false,
