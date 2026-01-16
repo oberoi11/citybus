@@ -1,3 +1,4 @@
+import { connectSocket } from "../helpers/socket";
 import React, { useState } from "react";
 import { Form, message } from "antd";
 import { Link } from "react-router-dom";
@@ -38,10 +39,15 @@ function Login() {
       });
       dispatch(HideLoading());
       if (response.data.success) {
-        message.success(response.data.message);
-        localStorage.setItem("token", response.data.data);
-        window.location.href = "/";
-      } else {
+  message.success(response.data.message);
+  localStorage.setItem("token", response.data.data);
+
+  // 🔥 CONNECT SOCKET ONLY AFTER LOGIN
+  connectSocket();
+
+  window.location.href = "/";
+}
+else {
         message.error(response.data.message);
       }
     } catch (error) {
