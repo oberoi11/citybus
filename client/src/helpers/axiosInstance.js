@@ -1,14 +1,10 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: "https://citybus-hjup.onrender.com",
-});
-
-// ✅ Attach token dynamically
-axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
+  baseURL: process.env.REACT_APP_BACKEND_URL || "https://citybus-hjup.onrender.com",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  timeout: 15000, // optional: prevent infinite spinning
+  withCredentials: false, // set true if using cookies
 });
