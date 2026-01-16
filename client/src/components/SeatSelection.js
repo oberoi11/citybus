@@ -5,10 +5,6 @@ import { axiosInstance } from "../helpers/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
 
-const socket = io("https://citybus-hjup.onrender.com", {
-  transports: ["websocket", "polling"],
-});
-
 function SeatSelection({ selectedSeats, setSelectedSeats, bus }) {
   const [reservedSeats, setReservedSeats] = useState([]);
   const { user } = useSelector((state) => state.users);
