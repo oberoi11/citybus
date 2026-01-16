@@ -5,7 +5,7 @@ import { axiosInstance } from "../helpers/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
 
-const socket = io("https://citybus-wwml.onrender.com", {
+const socket = io("https://citybus-1.onrender.com", {
   transports: ["websocket", "polling"],
 });
 
