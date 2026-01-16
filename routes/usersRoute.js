@@ -70,65 +70,65 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    const otp = crypto.randomInt(100000, 999999);
-    const otpExpires = Date.now() + 10 * 60 * 1000;
+  //   const otp = crypto.randomInt(100000, 999999);
+  //   const otpExpires = Date.now() + 10 * 60 * 1000;
 
-    await Otp.create({
-      userId: userExists._id,
-      otp: otp,
-      expiresAt: otpExpires,
-    });
+  //   await Otp.create({
+  //     userId: userExists._id,
+  //     otp: otp,
+  //     expiresAt: otpExpires,
+  //   });
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      secure: true,
-      auth: {
-        user: "nodemailer492@gmail.com",
-        pass: "osczpunsyilaaosq",
-      },
-    });
+  //   const transporter = nodemailer.createTransport({
+  //     service: "gmail",
+  //     secure: true,
+  //     auth: {
+  //       user: "nodemailer492@gmail.com",
+  //       pass: "osczpunsyilaaosq",
+  //     },
+  //   });
 
-    const mailOptions = {
-      from: '"Transit Master"<no-reply@transitmaster.com>',
-      to: userExists.email,
-      subject: "Your OTP for Login - Transit Master",
-      html: `
-      <div style="font-family: Arial, sans-serif; color: #333;">
-        <div style="background-color: #AC4425; padding: 20px; text-align: center; color: #fff;">
-          <h1 style="margin: 0;">Transit Master</h1>
-          <h2 style="margin: 5px 0;">One-Time Password (OTP)</h2>
-        </div>
-        <div style="padding: 20px; background-color: #fff; border: 1px solid #ddd; margin-top: -5px;">
-          <p>Dear <strong>${userExists.name || "User"}<strong>,</p>
-          <p>Your login request requires verification. Please use the following One-Time Password (OTP) to proceed:</p>
-          <div style="text-align: center; margin: 20px 0;">
-            <span style="font-size: 24px; font-weight: bold; color: #AC4425;">${otp}</span>
-          </div>
-          <p>This OTP is valid for <strong>10 minutes</strong>. Please do not share it with anyone.</p>
-          <p>If you did not request this OTP, please ignore this email or contact us immediately at <a href="mailto:support@transitmaster.com" style="color: #AC4425; text-decoration: none;">support@Transit Master.com</a>.</p>
-        </div>
-        <div style="background-color: #f8f8f8; padding: 10px; text-align: center; font-size: 12px; color: #666;">
-          <p>Thank you for choosing Transit Master!</p>
-          <p>Transit Master &copy; ${new Date().getFullYear()}</p>
-        </div>
-      </div>
-      `,
-    };    
+  //   const mailOptions = {
+  //     from: '"Transit Master"<no-reply@transitmaster.com>',
+  //     to: userExists.email,
+  //     subject: "Your OTP for Login - Transit Master",
+  //     html: `
+  //     <div style="font-family: Arial, sans-serif; color: #333;">
+  //       <div style="background-color: #AC4425; padding: 20px; text-align: center; color: #fff;">
+  //         <h1 style="margin: 0;">Transit Master</h1>
+  //         <h2 style="margin: 5px 0;">One-Time Password (OTP)</h2>
+  //       </div>
+  //       <div style="padding: 20px; background-color: #fff; border: 1px solid #ddd; margin-top: -5px;">
+  //         <p>Dear <strong>${userExists.name || "User"}<strong>,</p>
+  //         <p>Your login request requires verification. Please use the following One-Time Password (OTP) to proceed:</p>
+  //         <div style="text-align: center; margin: 20px 0;">
+  //           <span style="font-size: 24px; font-weight: bold; color: #AC4425;">${otp}</span>
+  //         </div>
+  //         <p>This OTP is valid for <strong>10 minutes</strong>. Please do not share it with anyone.</p>
+  //         <p>If you did not request this OTP, please ignore this email or contact us immediately at <a href="mailto:support@transitmaster.com" style="color: #AC4425; text-decoration: none;">support@Transit Master.com</a>.</p>
+  //       </div>
+  //       <div style="background-color: #f8f8f8; padding: 10px; text-align: center; font-size: 12px; color: #666;">
+  //         <p>Thank you for choosing Transit Master!</p>
+  //         <p>Transit Master &copy; ${new Date().getFullYear()}</p>
+  //       </div>
+  //     </div>
+  //     `,
+  //   };    
 
-    await transporter.sendMail(mailOptions);
+  //   await transporter.sendMail(mailOptions);
 
-    res.send({
-      message: "OTP sent to your email",
-      success: true,
-      data: { userId: userExists._id },
-    });
-  } catch (error) {
-    res.send({
-      message: error.message,
-      success: false,
-      data: null,
-    });
-  }
+  //   res.send({
+  //     message: "OTP sent to your email",
+  //     success: true,
+  //     data: { userId: userExists._id },
+  //   });
+  // } catch (error) {
+  //   res.send({
+  //     message: error.message,
+  //     success: false,
+  //     data: null,
+  //   });
+  // }
 });
 
 //verify otp
