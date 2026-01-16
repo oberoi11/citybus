@@ -3,12 +3,10 @@ const User = require("../models/usersModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middlewares/authMiddleware");
-const Otp = require("../models/otpModel");
-const nodemailer = require("nodemailer");
-const crypto = require("crypto");
 
-// register new user
-
+// -----------------------------
+// Register new user
+// -----------------------------
 router.post("/register", async (req, res) => {
   try {
     const existingUser = await User.findOne({ email: req.body.email });
@@ -19,10 +17,13 @@ router.post("/register", async (req, res) => {
         data: null,
       });
     }
+
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     req.body.password = hashedPassword;
+
     const newUser = new User(req.body);
     await newUser.save();
+
     res.send({
       message: "User created successfully",
       success: true,
@@ -37,11 +38,14 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Login route
+// -----------------------------
+// Login (password only, no OTP)
+// -----------------------------
 router.post("/login", async (req, res) => {
   try {
-    const userExists = await User.findOne({ email: req.body.email });
-    if (!userExists) {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
       return res.send({
         message: "User does not exist",
         success: false,
@@ -49,7 +53,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    if (userExists.isBlocked) {
+    if (user.isBlocked) {
       return res.send({
         message: "Your account is blocked, please contact admin",
         success: false,
@@ -57,10 +61,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    const passwordMatch = await bcrypt.compare(
-      req.body.password,
-      userExists.password
-    );
+    const passwordMatch = await bcrypt.compare(req.body.password, user.password);
 
     if (!passwordMatch) {
       return res.send({
@@ -70,98 +71,16 @@ router.post("/login", async (req, res) => {
       });
     }
 
-  //   const otp = crypto.randomInt(100000, 999999);
-  //   const otpExpires = Date.now() + 10 * 60 * 1000;
+    // ✅ Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.jwt_secret,
+      { expiresIn: "1d" }
+    );
 
-  //   await Otp.create({
-  //     userId: userExists._id,
-  //     otp: otp,
-  //     expiresAt: otpExpires,
-  //   });
-
-  //   const transporter = nodemailer.createTransport({
-  //     service: "gmail",
-  //     secure: true,
-  //     auth: {
-  //       user: "nodemailer492@gmail.com",
-  //       pass: "osczpunsyilaaosq",
-  //     },
-  //   });
-
-  //   const mailOptions = {
-  //     from: '"Transit Master"<no-reply@transitmaster.com>',
-  //     to: userExists.email,
-  //     subject: "Your OTP for Login - Transit Master",
-  //     html: `
-  //     <div style="font-family: Arial, sans-serif; color: #333;">
-  //       <div style="background-color: #AC4425; padding: 20px; text-align: center; color: #fff;">
-  //         <h1 style="margin: 0;">Transit Master</h1>
-  //         <h2 style="margin: 5px 0;">One-Time Password (OTP)</h2>
-  //       </div>
-  //       <div style="padding: 20px; background-color: #fff; border: 1px solid #ddd; margin-top: -5px;">
-  //         <p>Dear <strong>${userExists.name || "User"}<strong>,</p>
-  //         <p>Your login request requires verification. Please use the following One-Time Password (OTP) to proceed:</p>
-  //         <div style="text-align: center; margin: 20px 0;">
-  //           <span style="font-size: 24px; font-weight: bold; color: #AC4425;">${otp}</span>
-  //         </div>
-  //         <p>This OTP is valid for <strong>10 minutes</strong>. Please do not share it with anyone.</p>
-  //         <p>If you did not request this OTP, please ignore this email or contact us immediately at <a href="mailto:support@transitmaster.com" style="color: #AC4425; text-decoration: none;">support@Transit Master.com</a>.</p>
-  //       </div>
-  //       <div style="background-color: #f8f8f8; padding: 10px; text-align: center; font-size: 12px; color: #666;">
-  //         <p>Thank you for choosing Transit Master!</p>
-  //         <p>Transit Master &copy; ${new Date().getFullYear()}</p>
-  //       </div>
-  //     </div>
-  //     `,
-  //   };    
-
-  //   await transporter.sendMail(mailOptions);
-
-  //   res.send({
-  //     message: "OTP sent to your email",
-  //     success: true,
-  //     data: { userId: userExists._id },
-  //   });}
-  }catch (error) {
+    // ✅ Send token to frontend
     res.send({
-      message: error.message,
-      success: false,
-      data: null,
-    });
-  }
-});
-
-//verify otp
-router.post("/verify-otp", async (req, res) => {
-  try {
-    const { userId, otp } = req.body;
-
-    const otpRecord = await Otp.findOne({ userId, otp: parseInt(otp) });
-
-    if (!otpRecord) {
-      return res.send({
-        message: "Invalid OTP",
-        success: false,
-        data: null,
-      });
-    }
-
-    if (Date.now() > otpRecord.expiresAt) {
-      return res.send({
-        message: "Expired OTP",
-        success: false,
-        data: null,
-      });
-    }
-
-    const token = jwt.sign({ userId, email: User.email }, process.env.jwt_secret, {
-      expiresIn: "1d",
-    });
-
-    await Otp.deleteOne({ _id: otpRecord._id });
-
-    res.send({
-      message: "OTP verified successfully",
+      message: "Login successful",
       success: true,
       data: token,
     });
@@ -174,8 +93,9 @@ router.post("/verify-otp", async (req, res) => {
   }
 });
 
-// get user by id
-
+// -----------------------------
+// Get user by ID
+// -----------------------------
 router.post("/get-user-by-id", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.body.userId);
@@ -193,7 +113,9 @@ router.post("/get-user-by-id", authMiddleware, async (req, res) => {
   }
 });
 
-// get all users
+// -----------------------------
+// Get all users
+// -----------------------------
 router.post("/get-all-users", authMiddleware, async (req, res) => {
   try {
     const users = await User.find({});
@@ -211,8 +133,9 @@ router.post("/get-all-users", authMiddleware, async (req, res) => {
   }
 });
 
-// update user
-
+// -----------------------------
+// Update user permissions
+// -----------------------------
 router.post("/update-user-permissions", authMiddleware, async (req, res) => {
   try {
     await User.findByIdAndUpdate(req.body._id, req.body);
@@ -221,7 +144,7 @@ router.post("/update-user-permissions", authMiddleware, async (req, res) => {
       success: true,
       data: null,
     });
-  } catch {
+  } catch (error) {
     res.send({
       message: error.message,
       success: false,
