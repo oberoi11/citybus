@@ -2,22 +2,24 @@ const express = require("express");
 const cors = require("cors");
 const http = require("http");
 const socketIo = require("socket.io");
-const app = express();
+const path = require("path");
 require("dotenv").config();
 const dbConfig = require("./config/dbConfig");
+
+const app = express();
 const port = process.env.PORT || 5000;
-const path = require("path");
 
 // ------------------
-// Proper CORS setup
+// CORS setup
 // ------------------
 const allowedOrigins = [
-  "http://localhost:3000", // React dev
-  "https://your-frontend-url.netlify.app", // production frontend
+  "http://localhost:3000",        // local dev
+  "https://buscity.netlify.app",  // your deployed frontend
 ];
 
 app.use(cors({
   origin: function(origin, callback) {
+    // allow requests with no origin (like Postman)
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
@@ -29,9 +31,12 @@ app.use(cors({
   credentials: true,
 }));
 
-// Preflight for all routes
+// Preflight requests for all routes
 app.options("*", cors());
 
+// ------------------
+// Body parser
+// ------------------
 app.use(express.json());
 
 // ------------------
@@ -64,17 +69,18 @@ io.on("connection", (socket) => {
     io.emit("seat-selected", data);
   });
 
+  socket.on("seat-unreserved", (data) => {
+    io.emit("seat-unreserved", data);
+  });
+
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
 });
 
-module.exports = { io };
-
 // ------------------
-// Production setup (optional)
+// Optional: serve React in production
 // ------------------
-// Serve React build if in production
 // if (process.env.NODE_ENV === "production") {
 //   app.use(express.static("client/build"));
 //   app.get("*", (req, res) => {
@@ -87,9 +93,8 @@ module.exports = { io };
 // ------------------
 if (process.env.NODE_ENV === "production") {
   const https = require("https");
-
   setInterval(() => {
-    https.get("https://citybus-hjup.onrender.com"); // 👈 your backend URL
+    https.get("https://citybus-hjup.onrender.com"); // replace with your backend URL
   }, 1000 * 60 * 14); // every 14 minutes
 }
 
@@ -97,3 +102,5 @@ if (process.env.NODE_ENV === "production") {
 // Start server
 // ------------------
 server.listen(port, () => console.log(`Server running on port ${port}!`));
+
+module.exports = { io };
