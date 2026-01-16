@@ -1,3 +1,4 @@
+import { getSocket } from "../helpers/socket";
 import React, { useEffect, useState } from "react";
 import { Row, Col } from "antd";
 import "../resourses/bus.css";
@@ -18,31 +19,36 @@ function SeatSelection({ selectedSeats, setSelectedSeats, bus }) {
   };
 
   useEffect(() => {
-    fetchReservedSeats();
+  fetchReservedSeats();
 
-    socket.on("seat-selected", (data) => {
-      if (data.busId === bus._id) {
-        setReservedSeats((prevReservedSeats) => {
-          if (!prevReservedSeats.some(seat => seat.seatNumber === data.seatNumber)) {
-            return [...prevReservedSeats, { seatNumber: data.seatNumber, user: data.user }];
-          }
-          return prevReservedSeats;
-        });
-      }
-    });
-    
-    socket.on("seat-unreserved", (data) => {
-      if (data.busId === bus._id) {
-        setReservedSeats((prevReservedSeats) =>
-          prevReservedSeats.filter((seat) => seat.seatNumber !== data.seatNumber)
-        );
-      }
-    });
-    return () => {
-      socket.off("seat-selected");
-      socket.off("seat-unreserved");
-    };
-  }, [bus._id]);
+  const socket = getSocket();
+  if (!socket) return;
+
+  socket.on("seat-selected", (data) => {
+    if (data.busId === bus._id) {
+      setReservedSeats((prev) => {
+        if (!prev.some(s => s.seatNumber === data.seatNumber)) {
+          return [...prev, data];
+        }
+        return prev;
+      });
+    }
+  });
+
+  socket.on("seat-unreserved", (data) => {
+    if (data.busId === bus._id) {
+      setReservedSeats((prev) =>
+        prev.filter((s) => s.seatNumber !== data.seatNumber)
+      );
+    }
+  });
+
+  return () => {
+    socket.off("seat-selected");
+    socket.off("seat-unreserved");
+  };
+}, [bus._id]);
+
 
   const selectOrUnselectSeats = (seatNumber) => {
     const isReserved = reservedSeats.some(
