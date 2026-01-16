@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: "https://citybus-wwml.onrender.com",
+  baseURL: "https://citybus-1.onrender.com",
 });
 
 // ✅ Attach token dynamically
