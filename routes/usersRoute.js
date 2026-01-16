@@ -121,14 +121,14 @@ router.post("/login", async (req, res) => {
   //     message: "OTP sent to your email",
   //     success: true,
   //     data: { userId: userExists._id },
-  //   });
-  // } catch (error) {
-  //   res.send({
-  //     message: error.message,
-  //     success: false,
-  //     data: null,
-  //   });
-  // }
+  //   });}
+   catch (error) {
+    res.send({
+      message: error.message,
+      success: false,
+      data: null,
+    });
+  }
 });
 
 //verify otp
